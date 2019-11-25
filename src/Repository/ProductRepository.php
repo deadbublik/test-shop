@@ -40,6 +40,20 @@ class ProductRepository extends BaseRepository
     }
 
     /**
+     * @param array $ids
+     * @return Product[]
+     */
+    public function getAllByIds(array $ids): array
+    {
+        $sql = 'SELECT * FROM products WHERE id IN (?)';
+
+        $connection = DataBaseAbstractionLayer::getConnection();
+        $statement = $connection->executeQuery($sql, [$ids], [$connection::PARAM_INT_ARRAY]);
+
+        return $this->createEntityCollection($statement->fetchAll());
+    }
+
+    /**
      * @param Product $product
      * @return bool
      */

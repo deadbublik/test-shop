@@ -2,6 +2,7 @@
 
 namespace TestShop\Repository;
 
+use Exception;
 use TestShop\Component\DataBaseAbstractionLayer;
 use TestShop\Entity\Order;
 
@@ -32,19 +33,39 @@ class OrderRepository extends BaseRepository
      */
     public function create(Order $order): bool
     {
-        $data = [
-            'status' => $order->getStatus(),
-            'total' => $order->getTotal(),
-        ];
-
         $connection = DataBaseAbstractionLayer::getConnection();
-        $numberRows = $connection->insert('orders', $data);
+        $connection->beginTransaction();
 
-        if ($numberRows <= 0) {
+        try {
+            $numberRows = $connection->insert('orders', [
+                'status' => $order->getStatus(),
+                'total' => $order->getTotal(),
+            ]);
+
+            if ($numberRows <= 0) {
+                $connection->rollBack();
+                return false;
+            }
+
+            $order->setId($connection->lastInsertId());
+
+            foreach ($order->getProducts() as $product) {
+                $numberRows = $connection->insert('order_products', [
+                    'order_id' => $order->getId(),
+                    'product_id' => $product->getId(),
+                ]);
+
+                if ($numberRows <= 0) {
+                    $connection->rollBack();
+                    return false;
+                }
+            }
+        } catch (Exception $e) {
+            $connection->rollBack();
             return false;
         }
 
-        $order->setId($connection->lastInsertId());
+        $connection->commit();
 
         return true;
     }

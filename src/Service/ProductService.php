@@ -14,7 +14,7 @@ class ProductService
     /**
      * @return Product
      */
-    public function getTestProduct(): Product
+    public function buildTestProduct(): Product
     {
         $product = new Product();
         $product->setName('Товар ' . md5(random_int(1, 100000)));

@@ -34,7 +34,7 @@ class ProductsController
         $productIds = [];
 
         for ($i = 1; $i <= 20; $i++) {
-            $product = $productService->getTestProduct();
+            $product = $productService->buildTestProduct();
 
             if ($productRepository->create($product)) {
                 $productIds[] = $product->getId();

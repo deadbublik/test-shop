@@ -2,9 +2,11 @@
 
 namespace TestShop\Controller;
 
+use Symfony\Component\HttpFoundation\Request;
 use TestShop\Component\Response;
-use TestShop\Entity\Order;
 use TestShop\Repository\OrderRepository;
+use TestShop\Repository\ProductRepository;
+use TestShop\Service\OrderService;
 
 /**
  * Class OrdersController
@@ -18,11 +20,23 @@ class OrdersController
      */
     public function create(): Response
     {
+        $productIds = explode(',', Request::createFromGlobals()->request->get('productIds', ''));
+
+        if (empty($productIds)) {
+            return new Response(['error' => 'Product ids not set'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $productRepository = new ProductRepository();
+        $products = $productRepository->getAllByIds($productIds);
+
+        if (empty($products)) {
+            return new Response(['error' => 'Products not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        $orderService = new OrderService();
         $orderRepository = new OrderRepository();
 
-        $order = new Order();
-        $order->setStatus(Order::STATUS_NEW);
-        $order->setTotal(random_int(1000, 10000));
+        $order = $orderService->buildNewOrder(...$products);
 
         if (!$orderRepository->create($order)) {
             return new Response(['error' => 'Order was not created'], Response::HTTP_INTERNAL_SERVER_ERROR);

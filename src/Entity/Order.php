@@ -24,6 +24,18 @@ class Order
      * @var float
      */
     private $total;
+    /**
+     * @var Product[]
+     */
+    private $products;
+
+    /**
+     * Order constructor.
+     */
+    public function __construct()
+    {
+        $this->products = [];
+    }
 
     /**
      * @return int
@@ -71,5 +83,25 @@ class Order
     public function setTotal(float $total): void
     {
         $this->total = $total;
+    }
+
+    /**
+     * @param Product[] $products
+     */
+    public function addProduct(Product ...$products): void
+    {
+        foreach ($products as $product) {
+            if (!isset($this->products[$product->getId()])) {
+                $this->products[$product->getId()] = $product;
+            }
+        }
+    }
+
+    /**
+     * @return Product[]
+     */
+    public function getProducts(): array
+    {
+        return $this->products;
     }
 }
