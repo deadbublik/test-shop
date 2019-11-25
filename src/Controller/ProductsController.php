@@ -3,6 +3,7 @@
 namespace TestShop\Controller;
 
 use TestShop\Component\Response;
+use TestShop\Entity\Product;
 use TestShop\Repository\ProductRepository;
 
 /**
@@ -29,11 +30,22 @@ class ProductsController
     public function create(): Response
     {
         $productRepository = new ProductRepository();
+        $productIds = [];
 
-        if (!$productRepository->create()) {
-            return new Response(['error' => 'Product was not created'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        for ($i = 1; $i <= 20; $i++) {
+            $product = new Product();
+            $product->setName('Товар ' . md5(random_int(1, 100000)));
+            $product->setPrice((float)random_int(1000, 100000));
+
+            if ($productRepository->create($product)) {
+                $productIds[] = $product->getId();
+            }
         }
 
-        return new Response(['success' => 'create'], Response::HTTP_OK);
+        if (empty($productIds)) {
+            return new Response(['error' => 'Products were not created'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return new Response(['productIds' => $productIds], Response::HTTP_OK);
     }
 }
