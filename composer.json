@@ -1,0 +1,18 @@
+{
+  "name": "Test shop",
+  "authors": [
+    {
+      "name": "Aleksei Kuznetsov",
+      "email": "deadbublik@gmail.com"
+    }
+  ],
+  "minimum-stability": "dev",
+  "require": {
+    "php": ">=7.1.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "TestShop\\": "src/"
+    }
+  }
+}
