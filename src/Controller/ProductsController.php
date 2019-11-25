@@ -2,7 +2,7 @@
 
 namespace TestShop\Controller;
 
-use Symfony\Component\HttpFoundation\Response;
+use TestShop\Component\Response;
 
 /**
  * Class ProductsController
@@ -16,7 +16,9 @@ class ProductsController
      */
     public function index(): Response
     {
-        return new Response('index', Response::HTTP_OK);
+        $products = [];
+
+        return new Response(['products' => $products], Response::HTTP_OK);
     }
 
     /**
@@ -24,6 +26,6 @@ class ProductsController
      */
     public function create(): Response
     {
-        return new Response('create', Response::HTTP_OK);
+        return new Response(['success' => 'create'], Response::HTTP_OK);
     }
 }
