@@ -20,7 +20,7 @@ class Response extends SymfonyResponse
      */
     public function __construct(array $content = [], int $status = 200, array $headers = [])
     {
-        $content = json_encode($content, JSON_PRETTY_PRINT);
+        $content = json_encode($content, JSON_PRETTY_PRINT + JSON_UNESCAPED_UNICODE);
         $headers['content-type'] = 'application/json';
 
         parent::__construct($content, $status, $headers);

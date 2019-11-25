@@ -5,6 +5,7 @@ namespace TestShop\Controller;
 use TestShop\Component\Response;
 use TestShop\Entity\Product;
 use TestShop\Repository\ProductRepository;
+use TestShop\Service\ProductService;
 
 /**
  * Class ProductsController
@@ -29,13 +30,12 @@ class ProductsController
      */
     public function create(): Response
     {
+        $productService = new ProductService();
         $productRepository = new ProductRepository();
         $productIds = [];
 
         for ($i = 1; $i <= 20; $i++) {
-            $product = new Product();
-            $product->setName('Товар ' . md5(random_int(1, 100000)));
-            $product->setPrice((float)random_int(1000, 100000));
+            $product = $productService->getTestProduct();
 
             if ($productRepository->create($product)) {
                 $productIds[] = $product->getId();
