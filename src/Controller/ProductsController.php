@@ -3,6 +3,7 @@
 namespace TestShop\Controller;
 
 use TestShop\Component\Response;
+use TestShop\Repository\ProductRepository;
 
 /**
  * Class ProductsController
@@ -16,7 +17,8 @@ class ProductsController
      */
     public function index(): Response
     {
-        $products = [];
+        $productRepository = new ProductRepository();
+        $products = $productRepository->getAll();
 
         return new Response(['products' => $products], Response::HTTP_OK);
     }
@@ -26,6 +28,12 @@ class ProductsController
      */
     public function create(): Response
     {
+        $productRepository = new ProductRepository();
+
+        if (!$productRepository->create()) {
+            return new Response(['error' => 'Product was not created'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
         return new Response(['success' => 'create'], Response::HTTP_OK);
     }
 }

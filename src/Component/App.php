@@ -5,6 +5,7 @@ namespace TestShop\Component;
 use RuntimeException;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Exception\MethodNotAllowedException;
 use Symfony\Component\Routing\Loader\PhpFileLoader;
 use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\RequestContext;
@@ -35,6 +36,8 @@ class App
             unset($attributes['_controller']);
 
             $response = call_user_func_array($controller, $attributes);
+        } catch (MethodNotAllowedException $e) {
+            $response = new Response(['error' => 'This http-method is not allowed'], Response::HTTP_METHOD_NOT_ALLOWED);
         } catch (RuntimeException $e) {
             $response = new Response(['error' => 'Page not found'], Response::HTTP_NOT_FOUND);
         }
