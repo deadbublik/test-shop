@@ -3,7 +3,6 @@
 namespace TestShop\Controller;
 
 use TestShop\Component\Response;
-use TestShop\Entity\Product;
 use TestShop\Repository\ProductRepository;
 use TestShop\Service\ProductService;
 
