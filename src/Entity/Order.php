@@ -70,6 +70,14 @@ class Order
     }
 
     /**
+     * @return bool
+     */
+    public function isPaid(): bool
+    {
+        return $this->status === self::STATUS_PAID;
+    }
+
+    /**
      * @return float
      */
     public function getTotal(): float

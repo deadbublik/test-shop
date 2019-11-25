@@ -2,6 +2,7 @@
 
 namespace TestShop\Repository;
 
+use Doctrine\DBAL\ParameterType;
 use Exception;
 use TestShop\Component\DataBaseAbstractionLayer;
 use TestShop\Entity\Order;
@@ -25,6 +26,28 @@ class OrderRepository extends BaseRepository
         $order->setTotal((float)$data['total']);
 
         return $order;
+    }
+
+    /**
+     * @param int $id
+     * @return Order|null
+     */
+    public function getById(int $id): ?Order
+    {
+        $sql = 'SELECT * FROM orders WHERE id = :id';
+
+        $connection = DataBaseAbstractionLayer::getConnection();
+        $statement = $connection->prepare($sql);
+        $statement->bindValue('id', $id, ParameterType::INTEGER);
+        $statement->execute();
+
+        $result = $statement->fetch();
+
+        if ($result !== false) {
+            return $this->createEntity($result);
+        }
+
+        return null;
     }
 
     /**
@@ -68,5 +91,27 @@ class OrderRepository extends BaseRepository
         $connection->commit();
 
         return true;
+    }
+
+    /**
+     * @param Order $order
+     * @param int $status
+     * @return bool
+     */
+    public function setStatus(Order $order, int $status): bool
+    {
+        $connection = DataBaseAbstractionLayer::getConnection();
+        $numberRows = $connection->update('orders', ['status' => $status], ['id' => $order->getId()]);
+
+        return $numberRows > 0;
+    }
+
+    /**
+     * @param Order $order
+     * @return bool
+     */
+    public function setStatusPaid(Order $order): bool
+    {
+        return $this->setStatus($order, Order::STATUS_PAID);
     }
 }

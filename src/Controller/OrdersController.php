@@ -30,7 +30,7 @@ class OrdersController
         $products = $productRepository->getAllByIds($productIds);
 
         if (empty($products)) {
-            return new Response(['error' => 'Products not found'], Response::HTTP_NOT_FOUND);
+            return new Response(['error' => 'Products not found'], Response::HTTP_BAD_REQUEST);
         }
 
         $orderService = new OrderService();

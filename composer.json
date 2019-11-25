@@ -12,8 +12,9 @@
     "symfony/routing": "4.4.x-dev",
     "symfony/http-foundation": "4.4.x-dev",
     "symfony/config": "4.4.x-dev",
+    "doctrine/dbal": "2.9.x-dev",
     "ext-json": "*",
-    "doctrine/dbal": "2.9.x-dev"
+    "ext-curl": "*"
   },
   "autoload": {
     "psr-4": {
