@@ -33,6 +33,10 @@ class OrdersController
             return new Response(['error' => 'Products not found'], Response::HTTP_BAD_REQUEST);
         }
 
+        if (count($products) !== count($productIds)) {
+            return new Response(['error' => 'Products not found'], Response::HTTP_BAD_REQUEST);
+        }
+
         $orderService = new OrderService();
         $orderRepository = new OrderRepository();
 

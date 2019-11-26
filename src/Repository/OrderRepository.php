@@ -72,6 +72,7 @@ class OrderRepository extends BaseRepository
 
             $order->setId($connection->lastInsertId());
 
+            // todo change to multiple insert
             foreach ($order->getProducts() as $product) {
                 $numberRows = $connection->insert('order_products', [
                     'order_id' => $order->getId(),
@@ -103,7 +104,13 @@ class OrderRepository extends BaseRepository
         $connection = DataBaseAbstractionLayer::getConnection();
         $numberRows = $connection->update('orders', ['status' => $status], ['id' => $order->getId()]);
 
-        return $numberRows > 0;
+        if ($numberRows <= 0) {
+            return false;
+        }
+
+        $order->setStatus($status);
+
+        return true;
     }
 
     /**
